@@ -76,20 +76,26 @@ class StudentCms:
         path = Path('./data/stu.txt')
         path.parent.mkdir(parents=True, exist_ok=True)
         with open('./data/stu.txt', 'w', encoding='utf-8') as stu:
-            for stud in self.stu_list:
-                stu.write(str(stud.__dict__) + '\n')
+            # for stud in self.stu_list:
+            #     stu.write(str(stud.__dict__) + '\n')
+            #保存的时候，对象列表-》字典列表，然后直接把字典列表转化成字符串，写入成一行
+            stu_list=[stu.__dict__ for stu in self.stu_list]
+            stu.write(str(stu_list))
 
     def load_stu(self):
         try:
             with open('./data/stu.txt', 'r', encoding='utf-8') as stu:
                 stu_r = stu.read()
+                #加载的时候，文件是一行表面量的字典列表，通过ast.literal_eval()直接转换成字典列表
                 stu_list = ast.literal_eval(stu_r)
+                #字典解包实例化传入self.stu_list
                 self.stu_list = [Student(**stu) for stu in stu_list]
         except:
             path = Path('./data/stu.txt')
             path.parent.mkdir(parents=True, exist_ok=True)
             with open(path, 'w', encoding='utf-8'):
                 pass
+
 
     def start(self):
         while True:
